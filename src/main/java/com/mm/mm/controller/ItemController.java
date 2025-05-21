@@ -41,7 +41,7 @@ public class ItemController {
 //        return "User has been deleted";
 //    }
 
-    @GetMapping
+    @GetMapping("/approved")
     List<Item> getApprovedItems() {
         return itemService.getApprovedItems();
     }
