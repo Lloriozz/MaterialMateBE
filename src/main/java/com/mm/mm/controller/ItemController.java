@@ -40,4 +40,9 @@ public class ItemController {
 //        userService.deleteUser(userId);
 //        return "User has been deleted";
 //    }
+
+    @GetMapping
+    List<Item> getApprovedItems() {
+        return itemService.getApprovedItems();
+    }
 }
