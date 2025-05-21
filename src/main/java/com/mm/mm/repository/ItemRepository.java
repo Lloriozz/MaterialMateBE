@@ -4,6 +4,9 @@ import com.mm.mm.entity.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface UserRepository extends JpaRepository<Item, String> {
+public interface ItemRepository extends JpaRepository<Item, String> {
+    List<Item> findByApprovingStatus(String approvingStatus);
 }

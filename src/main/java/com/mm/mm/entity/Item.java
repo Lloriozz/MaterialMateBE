@@ -15,7 +15,8 @@ public class Item {
     private String title;
     private String description;
     private LocalDate uploadDate;
-    private String categoryID;
+    private String category;
+    private String ApprovingStatus;
     private String uploaderID;
     private String ApproverID;
     private String status;
@@ -53,12 +54,12 @@ public class Item {
         this.uploadDate = uploadDate;
     }
 
-    public String getCategoryID() {
-        return categoryID;
+    public String getCategory() {
+        return category;
     }
 
-    public void setCategoryID(String categoryID) {
-        this.categoryID = categoryID;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getUploaderID() {
@@ -83,5 +84,13 @@ public class Item {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getApprovingStatus() {
+        return ApprovingStatus;
+    }
+
+    public void setApprovingStatus(String approvingStatus) {
+        ApprovingStatus = approvingStatus;
     }
 }
