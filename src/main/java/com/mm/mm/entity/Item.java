@@ -16,10 +16,9 @@ public class Item {
     private String description;
     private LocalDate uploadDate;
     private String category;
-    private String ApprovingStatus;
+    private String approvingStatus;
     private String uploaderID;
-    private String ApproverID;
-    private String status;
+    private String approverID;
 
 
     public String getItemID() {
@@ -71,26 +70,19 @@ public class Item {
     }
 
     public String getApproverID() {
-        return ApproverID;
+        return approverID;
     }
 
     public void setApproverID(String approverID) {
-        ApproverID = approverID;
+        approverID = approverID;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     public String getApprovingStatus() {
-        return ApprovingStatus;
+        return approvingStatus;
     }
 
     public void setApprovingStatus(String approvingStatus) {
-        ApprovingStatus = approvingStatus;
+        this.approvingStatus = approvingStatus;
     }
 }
