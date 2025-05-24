@@ -1,6 +1,6 @@
 package com.mm.mm.controller;
 
-import com.mm.mm.dto.ItemCreationRequest;
+import com.mm.mm.dto.ItemRequest.ItemCreationRequest;
 import com.mm.mm.entity.Item;
 import com.mm.mm.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/items")
-//@CrossOrigin(origins = "*") // Optional: only if you're working with frontend dev
+@CrossOrigin(origins = "*") // Optional: only if you're working with frontend dev
 public class ItemController {
 
     @Autowired

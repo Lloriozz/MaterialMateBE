@@ -1,6 +1,6 @@
 package com.mm.mm.service;
 
-import com.mm.mm.dto.ItemCreationRequest;
+import com.mm.mm.dto.ItemRequest.ItemCreationRequest;
 
 //import com.mm.mm.dto.request.UserUpdateRequest;
 import com.mm.mm.entity.Item;

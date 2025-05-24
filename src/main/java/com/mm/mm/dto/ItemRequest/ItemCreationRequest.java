@@ -1,6 +1,4 @@
-package com.mm.mm.dto;
-
-import java.time.LocalDate;
+package com.mm.mm.dto.ItemRequest;
 
 public class ItemCreationRequest {
 
