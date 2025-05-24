@@ -35,5 +35,6 @@ build/
 ### Mac OS ###
 .DS_Store
 
-application.yml
+# Ignore Spring Boot config
+src/main/resources/application.yaml
 
