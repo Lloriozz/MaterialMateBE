@@ -1,31 +1,47 @@
 package com.mm.mm.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
+@Table(name = "Item")
 public class Item {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String itemID;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long itemID;
+
+    @Column(name = "Title")
     private String title;
+
+    @Column(name = "Description")
     private String description;
-    private LocalDate uploadDate;
+
+    @Column(name = "UploadDate")
+    private String uploadDate;
+
+    @Column(name = "CategoryID")
     private String category;
+
+    @Column(name = "ApprovingStatus")
     private String approvingStatus;
+
+    @Column(name = "UploaderID")
     private String uploaderID;
+
+    @Column(name = "ApproverID")
     private String approverID;
 
+    // Getters and Setters
 
-    public String getItemID() {
+    public Long getItemID() {
         return itemID;
     }
 
-    public void setItemID(String itemID) {
+    public void setItemID(Long itemID) {
         this.itemID = itemID;
     }
 
@@ -45,11 +61,11 @@ public class Item {
         this.description = description;
     }
 
-    public LocalDate getUploadDate() {
+    public String getUploadDate() {
         return uploadDate;
     }
 
-    public void setUploadDate(LocalDate uploadDate) {
+    public void setUploadDate(String uploadDate) {
         this.uploadDate = uploadDate;
     }
 
@@ -74,9 +90,8 @@ public class Item {
     }
 
     public void setApproverID(String approverID) {
-        approverID = approverID;
+        this.approverID = approverID;
     }
-
 
     public String getApprovingStatus() {
         return approvingStatus;

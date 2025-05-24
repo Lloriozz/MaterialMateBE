@@ -1,7 +1,6 @@
 package com.mm.mm.controller;
 
 import com.mm.mm.dto.ItemCreationRequest;
-//import com.mm.mm.dto.UserUpdateRequest;
 import com.mm.mm.entity.Item;
 import com.mm.mm.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,38 +10,24 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/items")
+//@CrossOrigin(origins = "*") // Optional: only if you're working with frontend dev
 public class ItemController {
+
     @Autowired
     private ItemService itemService;
 
-    @PostMapping
-    Item createUser(@RequestBody ItemCreationRequest request){
-        return itemService.createUser(request);
+    @PostMapping()
+    public Item createItem(@RequestBody ItemCreationRequest request) {
+        return itemService.createItem(request);
     }
 
-//    @GetMapping
-//    List<Item> getUsers(){
-//        return itemService.getItems();
-//    }
-
-//    @GetMapping("/{userId}")
-//    User getUser(@PathVariable("userId") String userId){
-//        return userService.getUser(userId);
-//    }
-
-//    @PutMapping("/{userId}")
-//    User updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request){
-//        return userService.updateUser(userId, request);
-//    }
-//
-//    @DeleteMapping("/{userId}")
-//    String deleteUser(@PathVariable String userId){
-//        userService.deleteUser(userId);
-//        return "User has been deleted";
-//    }
+    @GetMapping("/{itemID}")
+    public Item getItemById(@PathVariable("itemID") Long id) {
+        return itemService.getItem(id);
+    }
 
     @GetMapping("/approved")
-    List<Item> getApprovedItems() {
+    public List<Item> getApprovedItems() {
         return itemService.getApprovedItems();
     }
 }

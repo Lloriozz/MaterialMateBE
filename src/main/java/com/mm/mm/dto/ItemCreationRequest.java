@@ -6,9 +6,9 @@ public class ItemCreationRequest {
 
         private String title;
         private String description;
-        private LocalDate uploadDate;
+        private String uploadDate;
         private String category;
-
+        private String approvingStatus;
 
         public String getTitle() {
             return title;
@@ -26,11 +26,11 @@ public class ItemCreationRequest {
             this.description = description;
         }
 
-        public LocalDate getUploadDate() {
+        public String getUploadDate() {
             return uploadDate;
         }
 
-        public void setUploadDate(LocalDate uploadDate) {
+        public void setUploadDate(String uploadDate) {
             this.uploadDate = uploadDate;
         }
 
@@ -40,6 +40,14 @@ public class ItemCreationRequest {
 
         public void setCategory(String categoryID) {
             this.category = categoryID;
+        }
+
+        public String getApprovingStatus() {
+            return approvingStatus;
+        }
+
+        public void setApprovingStatus(String approvingStatus) {
+            this.approvingStatus = approvingStatus;
         }
 }
 
