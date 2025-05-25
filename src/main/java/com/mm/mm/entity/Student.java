@@ -8,22 +8,23 @@ public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @Column(name="Username")
+    @Column(name="username")
     private String userName;
 
-    @Column(name="Password")
+    @Column(name="password")
     private String password;
 
-    @Column(name="Fullname")
+    @Column(name="fullname")
     private String fullName;
 
-    @Column(name="Email")
+    @Column(name="email")
     private String email;
 
-    @Column(name="TotalCredits")
-    private int totalCredit;
+    @Column(name="total_credit")
+    private Integer totalCredit;
 
     public Long getId() {
         return id;
@@ -65,11 +66,11 @@ public class Student {
         this.email = email;
     }
 
-    public int getTotalCredit() {
+    public Integer getTotalCredit() {
         return totalCredit;
     }
 
-    public void setTotalCredit(int totalCredit) {
+    public void setTotalCredit(Integer totalCredit) {
         this.totalCredit = totalCredit;
     }
 }
