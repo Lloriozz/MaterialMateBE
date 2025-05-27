@@ -2,7 +2,6 @@ package com.mm.mm.controller;
 
 import com.mm.mm.dto.StudentRequest.StudentCreationRequest;
 import com.mm.mm.dto.StudentRequest.StudentLoginRequest;
-import com.mm.mm.dto.StudentRequest.StudentResponseRequest;
 import com.mm.mm.entity.Student;
 import com.mm.mm.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -57,9 +57,19 @@ public class StudentController {
         return studentService.loginStudent(request); // Delegate to service
     }
 
-
-
-
-
-
+    @GetMapping("/id/{username}")
+    public ResponseEntity<?> getStudentIdByUsername(@PathVariable String username) {
+        // Find the student by username
+        Student student = studentService.findByUsername(username);
+        
+        if (student != null) {
+            // Return the student ID
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", student.getId());
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Student not found with username: " + username);
+        }
+    }
 }
