@@ -36,4 +36,8 @@ public class ItemService {
         return itemRepository.findByApprovingStatus("Approved");
     }
 
+    // Get all items by uploaderID (studentID)
+    public List<Item> getItemsByUploaderId(String uploaderID) {
+        return itemRepository.findByUploaderID(uploaderID);
+    }
 }
