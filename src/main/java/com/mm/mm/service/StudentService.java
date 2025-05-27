@@ -1,9 +1,12 @@
 package com.mm.mm.service;
 
 import com.mm.mm.dto.StudentRequest.StudentCreationRequest;
+import com.mm.mm.dto.StudentRequest.StudentLoginRequest;
 import com.mm.mm.entity.Student;
 import com.mm.mm.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -70,4 +73,23 @@ public class StudentService {
     public boolean verifyPassword(String rawPassword, String hashedPassword) {
         return passwordEncoder.matches(rawPassword, hashedPassword);
     }
+
+    public ResponseEntity<String> loginStudent(StudentLoginRequest request) {
+        String username = request.getUsername();
+        String password = request.getPassword();
+
+        Student student = studentRepository.findByUserName(username);
+        if (student == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username not existed");
+        }
+
+        if (!verifyPassword(password, student.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
+        }
+
+        return ResponseEntity.ok("Login successful");
+    }
+
+
+
 }
