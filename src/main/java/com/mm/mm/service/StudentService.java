@@ -27,7 +27,7 @@ public class StudentService {
         }
 
         try {
-            return studentRepository.existsByUserName(username.trim());
+            return studentRepository.existsByUsername(username.trim());
         } catch (Exception e) {
             System.err.println("Error checking username existence: " + e.getMessage());
             throw new RuntimeException("Unable to check username availability", e);
@@ -42,17 +42,17 @@ public class StudentService {
 
         try {
             Student student = new Student();
-            student.setUserName(request.getUsername().trim());
+            student.setUsername(request.getUsername().trim());
 
             // Hash the password before saving
             String hashedPassword = passwordEncoder.encode(request.getPassword());
             student.setPassword(hashedPassword);
 
             // Set default values
-            student.setTotalCredit(0);
+            student.setTotalCredits(0);
             student.setEmail(null); // Will be set later
-            student.setFullName(null); // Will be set later
-
+            student.setFirstName(null);
+            student.setLastName(null);
             return studentRepository.save(student);
 
         } catch (Exception e) {
@@ -66,7 +66,7 @@ public class StudentService {
     }
 
     public Student findByUsername(String username) {
-        return studentRepository.findByUserName(username);
+        return studentRepository.findByUsername(username);
     }
 
     // Method for login verification (you'll need this later)
@@ -78,7 +78,7 @@ public class StudentService {
         String username = request.getUsername();
         String password = request.getPassword();
 
-        Student student = studentRepository.findByUserName(username);
+        Student student = studentRepository.findByUsername(username);
         if (student == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username not existed");
         }

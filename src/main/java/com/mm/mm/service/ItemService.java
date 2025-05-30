@@ -22,7 +22,7 @@ public class ItemService {
         item.setCategory(request.getCategory());
         item.setDescription(request.getDescription());
         item.setUploadDate(request.getUploadDate());
-        item.setApprovingStatus("approved");
+        item.setApprovingStatus("Pending");
         return itemRepository.save(item);
     }
 
