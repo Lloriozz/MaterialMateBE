@@ -1,6 +1,7 @@
 package com.mm.mm.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "Student")
@@ -8,38 +9,52 @@ public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "studentid")
-    private Long id;
+    @Column(name = "StudentID")
+    private String studentID;
 
-    @Column(name="username")
-    private String userName;
+    @Column(name = "Username")
+    private String username;
 
-    @Column(name="password")
+    @Column(name = "Password")
     private String password;
 
-    @Column(name="fullname")
-    private String fullName;
+    @Column(name = "FirstName")
+    private String firstName;
 
-    @Column(name="email")
+    @Column(name = "LastName")
+    private String lastName;
+
+    @Column(name = "Email")
     private String email;
 
-    @Column(name="total_credit")
-    private Integer totalCredit;
+    @Column(name = "PhoneNumber")
+    private String phoneNumber;
 
-    public Long getId() {
-        return id;
+    @Column(name = "Country")
+    private String country;
+
+    @Column(name = "University")
+    private String university;
+
+    @Column(name = "TotalCredits")
+    private Integer totalCredits;
+
+    // Getters and Setters
+
+    public String getStudentID() {
+        return studentID;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setStudentID(String studentID) {
+        this.studentID = studentID;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -50,12 +65,20 @@ public class Student {
         this.password = password;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -66,11 +89,35 @@ public class Student {
         this.email = email;
     }
 
-    public Integer getTotalCredit() {
-        return totalCredit;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setTotalCredit(Integer totalCredit) {
-        this.totalCredit = totalCredit;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getUniversity() {
+        return university;
+    }
+
+    public void setUniversity(String university) {
+        this.university = university;
+    }
+
+    public Integer getTotalCredits() {
+        return totalCredits;
+    }
+
+    public void setTotalCredits(Integer totalCredits) {
+        this.totalCredits = totalCredits;
     }
 }
