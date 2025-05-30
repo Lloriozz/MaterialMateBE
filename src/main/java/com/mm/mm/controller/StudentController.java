@@ -65,7 +65,7 @@ public class StudentController {
         if (student != null) {
             // Return the student ID
             Map<String, Object> response = new HashMap<>();
-            response.put("id", student.getId());
+            response.put("id", student.getStudentID());
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
