@@ -35,7 +35,13 @@ public class Item {
     @Column(name = "ApproverID")
     private String approverID;
 
-    // Getters and Setters
+    @Lob
+    @Column(name = "FileData") // rename FilePath to FileData in DB
+    private byte[] fileData;
+
+    @Lob
+    @Column(name = "CoverImage")
+    private byte[] coverImage;
 
     public Long getItemID() {
         return itemID;
@@ -77,6 +83,14 @@ public class Item {
         this.category = category;
     }
 
+    public String getApprovingStatus() {
+        return approvingStatus;
+    }
+
+    public void setApprovingStatus(String approvingStatus) {
+        this.approvingStatus = approvingStatus;
+    }
+
     public String getUploaderID() {
         return uploaderID;
     }
@@ -93,11 +107,19 @@ public class Item {
         this.approverID = approverID;
     }
 
-    public String getApprovingStatus() {
-        return approvingStatus;
+    public byte[] getFileData() {
+        return fileData;
     }
 
-    public void setApprovingStatus(String approvingStatus) {
-        this.approvingStatus = approvingStatus;
+    public void setFileData(byte[] fileData) {
+        this.fileData = fileData;
+    }
+
+    public byte[] getCoverImage() {
+        return coverImage;
+    }
+
+    public void setCoverImage(byte[] coverImage) {
+        this.coverImage = coverImage;
     }
 }
