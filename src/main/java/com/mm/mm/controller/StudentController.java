@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +18,7 @@ import java.util.Map;
 @RequestMapping("/students")
 @CrossOrigin(origins = "*") // Enable CORS for frontend
 public class StudentController {
+    private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
     @Autowired
     private StudentService studentService;
@@ -61,7 +64,7 @@ public class StudentController {
     public ResponseEntity<?> getStudentIdByUsername(@PathVariable String username) {
         // Find the student by username
         Student student = studentService.findByUsername(username);
-        
+
         if (student != null) {
             // Return the student ID
             Map<String, Object> response = new HashMap<>();
@@ -71,5 +74,11 @@ public class StudentController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Student not found with username: " + username);
         }
+    }
+
+    @GetMapping("/{username}/credits")
+    public Integer getTotalCredits(@PathVariable String username) {
+        logger.info("Received request to get total credits for username: {}", username);
+        return studentService.getTotalCreditsByUsername(username);
     }
 }
