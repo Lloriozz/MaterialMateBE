@@ -103,4 +103,14 @@ public class StudentService {
                 .map(Student::getTotalCredits)
                 .orElseThrow(() -> new RuntimeException("Student not found with username: " + username));
     }
+
+    public Student updateCreditsByUsername(String username, Integer newCredits) {
+        logger.info("Updating credits for username: {} to {}", username, newCredits);
+
+        Student student = studentRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Student not found with username: " + username));
+
+        student.setTotalCredits(newCredits);
+        return studentRepository.save(student);
+    }
 }
