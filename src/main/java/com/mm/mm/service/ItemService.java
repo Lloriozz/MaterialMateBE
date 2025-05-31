@@ -1,6 +1,7 @@
 package com.mm.mm.service;
 
 import com.mm.mm.dto.ItemRequest.ItemCreationRequest;
+import com.mm.mm.dto.ItemRequest.UpdateApprovingStatusRequest;
 
 //import com.mm.mm.dto.request.UserUpdateRequest;
 import com.mm.mm.entity.Item;
@@ -72,5 +73,43 @@ public class ItemService {
     // Get all items by uploaderID (studentID)
     public List<Item> getItemsByUploaderId(String uploaderID) {
         return itemRepository.findByUploaderID(uploaderID);
+    }
+
+    public List<Item> getAllItems() {
+        logger.info("Getting all items");
+        return itemRepository.findAll();
+    }
+
+    public Item updateApprovingStatus(String itemID, UpdateApprovingStatusRequest request) {
+        logger.info("Updating approving status for item: {} to {}", itemID, request.getApprovingStatus());
+
+        // Validate input
+        if (request.getApprovingStatus() == null || request.getApprovingStatus().trim().isEmpty()) {
+            throw new IllegalArgumentException("Approving status cannot be empty");
+        }
+
+        // Validate approving status value
+        String status = request.getApprovingStatus().trim();
+        if (!status.equals("Approved") && !status.equals("Rejected") && !status.equals("Pending")) {
+            throw new IllegalArgumentException("Invalid approving status. Must be one of: Approved, Rejected, Pending");
+        }
+
+        // Find and update item
+        Item item = itemRepository.findById(itemID)
+                .orElseThrow(() -> new RuntimeException("Item not found with ID: " + itemID));
+
+        // Check if item is already in the requested status
+        if (item.getApprovingStatus().equals(status)) {
+            logger.info("Item {} is already in status: {}", itemID, status);
+            return item;
+        }
+
+        // Update item status
+        item.setApprovingStatus(status);
+
+        // Save and return updated item
+        Item updatedItem = itemRepository.save(item);
+        logger.info("Successfully updated item {} approving status to {}", itemID, status);
+        return updatedItem;
     }
 }
