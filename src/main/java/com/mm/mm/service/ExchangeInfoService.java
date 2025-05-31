@@ -13,9 +13,13 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class ExchangeInfoService {
+    private static final Logger logger = LoggerFactory.getLogger(ExchangeInfoService.class);
+
     @Autowired
     private ExchangeInfoRepository exchangeInfoRepository;
 
@@ -45,5 +49,11 @@ public class ExchangeInfoService {
     public List<ExchangeInfo> getDownloadedItemsByStudent(String studentId) {
         return exchangeInfoRepository.findByStudent_StudentIDAndType(studentId, "download");
     }
-}
 
+    public List<ExchangeInfo> getAllExchangeInfos() {
+        logger.info("Getting all exchange info records");
+        return exchangeInfoRepository.findAll();
+    }
+
+    // You can add other business logic methods here
+}
