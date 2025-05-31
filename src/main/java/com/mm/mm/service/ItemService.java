@@ -59,7 +59,7 @@ public class ItemService {
         }
     }
 
-    public Item getItem(Long itemID) {
+    public Item getItem(String itemID) {
         return itemRepository.findById(itemID)
                 .orElseThrow(() -> new RuntimeException("Item not found"));
     }
