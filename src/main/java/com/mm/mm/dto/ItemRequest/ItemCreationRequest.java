@@ -1,52 +1,63 @@
 package com.mm.mm.dto.ItemRequest;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class ItemCreationRequest {
 
-        private String title;
-        private String description;
-        private String uploadDate;
-        private String category;
-        private String approvingStatus;
+    private String title;
+    private String description;
+    private String category;
+    private String uploaderID;
+    private MultipartFile pdfFile;
+    private MultipartFile imageCover;
 
-        public String getTitle() {
-            return title;
-        }
+    // Getters and setters
 
-        public void setTitle(String title) {
-            this.title = title;
-        }
+    public String getTitle() {
+        return title;
+    }
 
-        public String getDescription() {
-            return description;
-        }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-        public void setDescription(String description) {
-            this.description = description;
-        }
+    public String getDescription() {
+        return description;
+    }
 
-        public String getUploadDate() {
-            return uploadDate;
-        }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-        public void setUploadDate(String uploadDate) {
-            this.uploadDate = uploadDate;
-        }
+    public String getCategory() {
+        return category;
+    }
 
-        public String getCategory() {
-            return category;
-        }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-        public void setCategory(String categoryID) {
-            this.category = categoryID;
-        }
+    public String getUploaderID() {
+        return uploaderID;
+    }
 
-        public String getApprovingStatus() {
-            return approvingStatus;
-        }
+    public void setUploaderID(String uploaderID) {
+        this.uploaderID = uploaderID;
+    }
 
-        public void setApprovingStatus(String approvingStatus) {
-            this.approvingStatus = approvingStatus;
-        }
+    public MultipartFile getPdfFile() {
+        return pdfFile;
+    }
+
+    public void setPdfFile(MultipartFile pdfFile) {
+        this.pdfFile = pdfFile;
+    }
+
+    public MultipartFile getImageCover() {
+        return imageCover;
+    }
+
+    public void setImageCover(MultipartFile imageCover) {
+        this.imageCover = imageCover;
+    }
 }
-
-
