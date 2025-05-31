@@ -2,6 +2,7 @@ package com.mm.mm.controller;
 
 import com.mm.mm.dto.StudentRequest.StudentCreationRequest;
 import com.mm.mm.dto.StudentRequest.StudentLoginRequest;
+import com.mm.mm.dto.StudentRequest.UpdateCreditsRequest;
 import com.mm.mm.entity.Student;
 import com.mm.mm.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,5 +81,22 @@ public class StudentController {
     public Integer getTotalCredits(@PathVariable String username) {
         logger.info("Received request to get total credits for username: {}", username);
         return studentService.getTotalCreditsByUsername(username);
+    }
+
+    @PutMapping("/{username}/credits")
+    public ResponseEntity<?> updateCredits(
+            @PathVariable String username,
+            @RequestBody UpdateCreditsRequest request) {
+        try {
+            logger.info("Received request to update credits for username: {}", username);
+            Student updatedStudent = studentService.updateCreditsByUsername(username, request.getCredits());
+            return ResponseEntity.ok(updatedStudent);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while updating credits");
+        }
     }
 }
