@@ -1,9 +1,13 @@
 package com.mm.mm.controller;
 
 import java.util.List;
+
+import com.mm.mm.dto.ItemRequest.UpdateApprovingStatusRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.mm.mm.dto.ItemRequest.ItemCreationRequest;
@@ -66,5 +70,40 @@ public class ItemController {
     @GetMapping("/student/{uploaderID}")
     public List<Item> getItemsByUploaderId(@PathVariable("uploaderID") String uploaderID) {
         return itemService.getItemsByUploaderId(uploaderID);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllItems() {
+        try {
+            logger.info("Received request to get all items");
+            List<Item> items = itemService.getAllItems();
+            return ResponseEntity.ok(items);
+        } catch (Exception e) {
+            logger.error("Error getting all items: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while getting items");
+        }
+    }
+
+    @PutMapping("/{itemID}/status")
+    public ResponseEntity<?> updateApprovingStatus(
+            @PathVariable("itemID") String itemID,
+            @RequestBody UpdateApprovingStatusRequest request) {
+        try {
+            Item updatedItem = itemService.updateApprovingStatus(itemID, request);
+            return ResponseEntity.ok(updatedItem);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Invalid request to update approving status: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        } catch (RuntimeException e) {
+            logger.error("Error updating approving status: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Unexpected error updating approving status: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred while updating approving status");
+        }
     }
 }

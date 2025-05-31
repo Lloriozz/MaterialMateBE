@@ -2,13 +2,20 @@ server:
   port: 8080
   servlet:
     context-path: /mm
+  tomcat:
+    max-http-form-post-size: 20MB
+    max-swallow-size: 20MB
 
 spring:
   datasource:
-    url: "jdbc:mysql://localhost:3306/materialmatetest"
+    url: "jdbc:mysql://localhost:3307/MaterialMate"
     username: root
-    password: Khanh07062005.
+    password: root
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB

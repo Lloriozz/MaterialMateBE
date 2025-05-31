@@ -36,5 +36,5 @@ build/
 .DS_Store
 
 # Ignore Spring Boot config
-src/main/resources/application.yaml
+src/main/resources/application.ya
 
