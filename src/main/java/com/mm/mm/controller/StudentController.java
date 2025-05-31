@@ -96,6 +96,20 @@ public class StudentController {
         return studentService.getTotalCreditsByUsername(username);
     }
 
+    @GetMapping("/{username}")
+    public ResponseEntity<?> getStudentByUsername(@PathVariable String username) {
+        try {
+            Student student = studentService.findByUsername(username);
+            return ResponseEntity.ok(student);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Student not found with username: " + username);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error retrieving student: " + e.getMessage());
+        }
+    }
+
     @PutMapping("/{username}/credits")
     public ResponseEntity<?> updateCredits(
             @PathVariable String username,
