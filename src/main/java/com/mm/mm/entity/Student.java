@@ -8,9 +8,10 @@ import java.util.List;
 public class Student {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "StudentID")
-    private Long studentID;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "StudentID", columnDefinition = "CHAR(36)")
+    private String studentID;
 
     @Column(name = "Username")
     private String username;
@@ -41,11 +42,11 @@ public class Student {
 
     // Getters and Setters
 
-    public Long getStudentID() {
+    public String getStudentID() {
         return studentID;
     }
 
-    public void setStudentID(Long studentID) {
+    public void setStudentID(String studentID) {
         this.studentID = studentID;
     }
 
