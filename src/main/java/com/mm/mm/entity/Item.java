@@ -11,13 +11,15 @@ import java.util.UUID;
 public class Item {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long itemID;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "ItemID", columnDefinition = "CHAR(36)")
+    private String itemID;
 
     @Column(name = "Title")
     private String title;
 
-    @Column(name = "Description")
+    @Column(name = "Description", length = 1000)
     private String description;
 
     @Column(name = "UploadDate")
@@ -36,18 +38,18 @@ public class Item {
     private String approverID;
 
     @Lob
-    @Column(name = "FileData") // rename FilePath to FileData in DB
+    @Column(name = "FileData", columnDefinition = "LONGBLOB")
     private byte[] fileData;
 
     @Lob
-    @Column(name = "CoverImage")
+    @Column(name = "CoverImage", columnDefinition = "LONGBLOB")
     private byte[] coverImage;
 
-    public Long getItemID() {
+    public String getItemID() {
         return itemID;
     }
 
-    public void setItemID(Long itemID) {
+    public void setItemID(String itemID) {
         this.itemID = itemID;
     }
 
