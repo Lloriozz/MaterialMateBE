@@ -1,6 +1,7 @@
 package com.mm.mm.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 import java.util.List;
 
 @Entity
