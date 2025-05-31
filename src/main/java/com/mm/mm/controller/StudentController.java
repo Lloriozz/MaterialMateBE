@@ -2,6 +2,7 @@ package com.mm.mm.controller;
 
 import com.mm.mm.dto.StudentRequest.StudentCreationRequest;
 import com.mm.mm.dto.StudentRequest.StudentLoginRequest;
+import com.mm.mm.dto.StudentRequest.StudentProfileSetupRequest;
 import com.mm.mm.dto.StudentRequest.UpdateCreditsRequest;
 import com.mm.mm.entity.Student;
 import com.mm.mm.service.StudentService;
@@ -49,6 +50,18 @@ public class StudentController {
         try {
             Student createdStudent = studentService.createStudent(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
+        }
+    }
+
+    @PutMapping("/profile-setup")
+    public ResponseEntity<?> updateProfile(@RequestBody StudentProfileSetupRequest request) {
+        try {
+            Student updatedStudent = studentService.updateStudentProfile(request);
+            return ResponseEntity.ok(updatedStudent); // Return updated profile
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {

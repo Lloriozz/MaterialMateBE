@@ -1,7 +1,15 @@
 package com.mm.mm.entity;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "ExchangeInfo")
@@ -10,29 +18,29 @@ public class ExchangeInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ExchangeID")
-    private Integer exchangeID;
+    private Long exchangeID; // Changed to Long for consistency
 
-    @Column(name = "Type")
+    @Column(name = "Type", nullable = false)
     private String type;
 
-    @Column(name = "Date")
+    @Column(name = "Date", nullable = false)
     private LocalDate date;
 
     @ManyToOne
-    @JoinColumn(name = "StudentID")
+    @JoinColumn(name = "StudentID", referencedColumnName = "StudentID", nullable = false)
     private Student student;
 
     @ManyToOne
-    @JoinColumn(name = "ItemID")
+    @JoinColumn(name = "ItemID", referencedColumnName = "ItemID", nullable = false)
     private Item item;
 
     // Getters and Setters
 
-    public Integer getExchangeID() {
+    public Long getExchangeID() {
         return exchangeID;
     }
 
-    public void setExchangeID(Integer exchangeID) {
+    public void setExchangeID(Long exchangeID) {
         this.exchangeID = exchangeID;
     }
 

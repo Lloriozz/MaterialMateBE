@@ -2,6 +2,7 @@ package com.mm.mm.service;
 
 import com.mm.mm.dto.StudentRequest.StudentCreationRequest;
 import com.mm.mm.dto.StudentRequest.StudentLoginRequest;
+import com.mm.mm.dto.StudentRequest.StudentProfileSetupRequest;
 import com.mm.mm.entity.Student;
 import com.mm.mm.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudentService {
@@ -62,6 +64,20 @@ public class StudentService {
             System.err.println("Error creating student: " + e.getMessage());
             throw new RuntimeException("Unable to create student account", e);
         }
+    }
+
+    public Student updateStudentProfile(StudentProfileSetupRequest request) {
+        Student student = studentRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new RuntimeException("Student not found with username: " + request.getUsername()));
+
+        student.setFirstName(request.getFirstName());
+        student.setLastName(request.getLastName());
+        student.setEmail(request.getEmail());
+        student.setPhoneNumber(request.getPhoneNumber());
+        student.setCountry(request.getCountry());
+        student.setUniversity(request.getUniversity());
+
+        return studentRepository.save(student);
     }
 
     public List<Student> getAllStudents() {
