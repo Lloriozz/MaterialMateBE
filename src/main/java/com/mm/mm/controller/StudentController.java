@@ -1,9 +1,7 @@
 package com.mm.mm.controller;
 
-import com.mm.mm.dto.StudentRequest.StudentCreationRequest;
-import com.mm.mm.dto.StudentRequest.StudentLoginRequest;
-import com.mm.mm.dto.StudentRequest.StudentProfileSetupRequest;
-import com.mm.mm.dto.StudentRequest.UpdateCreditsRequest;
+import com.mm.mm.dto.StudentRequest.*;
+
 import com.mm.mm.entity.Student;
 import com.mm.mm.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,6 +122,23 @@ public class StudentController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred while updating credits");
+        }
+    }
+
+    @GetMapping("/username/{studentId}")
+    public ResponseEntity<?> getUsernameByStudentId(@PathVariable String studentId) {
+        try {
+            logger.info("Received request to get username for studentId: {}", studentId);
+            String username = studentService.getUsernameByStudentId(studentId);
+            Map<String, String> response = new HashMap<>();
+            response.put("username", username);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Student not found with ID: " + studentId);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error retrieving username: " + e.getMessage());
         }
     }
 }

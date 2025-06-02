@@ -129,4 +129,12 @@ public class StudentService {
         student.setTotalCredits(newCredits);
         return studentRepository.save(student);
     }
+
+    public String getUsernameByStudentId(String studentId) {
+        logger.info("Getting username for studentId: {}", studentId);
+
+        return studentRepository.findById(studentId)
+                .map(Student::getUsername)
+                .orElseThrow(() -> new RuntimeException("Student not found with ID: " + studentId));
+    }
 }
