@@ -1,6 +1,7 @@
 package com.mm.mm.entity;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,18 +11,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "ExchangeInfo")
 public class ExchangeInfo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ExchangeID")
-    private Long exchangeID; // Changed to Long for consistency
-
-    @Column(name = "Type", nullable = false)
-    private String type;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "ExchangeID", columnDefinition = "CHAR(36)")
+    private String exchangeID;
 
     @Column(name = "Date", nullable = false)
     private LocalDate date;
@@ -36,20 +36,12 @@ public class ExchangeInfo {
 
     // Getters and Setters
 
-    public Long getExchangeID() {
+    public String getExchangeID() {
         return exchangeID;
     }
 
-    public void setExchangeID(Long exchangeID) {
+    public void setExchangeID(String exchangeID) {
         this.exchangeID = exchangeID;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public LocalDate getDate() {

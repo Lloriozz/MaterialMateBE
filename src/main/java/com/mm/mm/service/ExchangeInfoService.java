@@ -1,7 +1,7 @@
 package com.mm.mm.service;
 
+import com.mm.mm.dto.ExchangeInfoRequest.ExchangeInfoCreationRequest;
 import com.mm.mm.entity.ExchangeInfo;
-
 import com.mm.mm.entity.Item;
 import com.mm.mm.entity.Student;
 import com.mm.mm.repository.ExchangeInfoRepository;
@@ -39,7 +39,30 @@ public class ExchangeInfoService {
         // Create and save the ExchangeInfo entity
         ExchangeInfo exchangeInfo = new ExchangeInfo();
         exchangeInfo.setDate(LocalDate.now());
-        exchangeInfo.setType("download");
+        exchangeInfo.setStudent(student);
+        exchangeInfo.setItem(item);
+
+        return exchangeInfoRepository.save(exchangeInfo);
+    }
+
+    public ExchangeInfo createNewExchange(ExchangeInfoCreationRequest request) {
+        logger.info("Creating new exchange info with request: {}", request);
+
+        // Fetch the Student and Item entities from the database
+        Student student = studentRepository.findById(request.getStudentId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid student ID: " + request.getStudentId()));
+        Item item = itemRepository.findById(request.getItemId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid item ID: " + request.getItemId()));
+
+        // Parse date
+        LocalDate date = LocalDate.now();
+        if (request.getDate() != null && !request.getDate().isEmpty()) {
+            date = LocalDate.parse(request.getDate());
+        }
+
+        // Create and save the ExchangeInfo entity
+        ExchangeInfo exchangeInfo = new ExchangeInfo();
+        exchangeInfo.setDate(date);
         exchangeInfo.setStudent(student);
         exchangeInfo.setItem(item);
 
@@ -47,7 +70,7 @@ public class ExchangeInfoService {
     }
 
     public List<ExchangeInfo> getDownloadedItemsByStudent(String studentId) {
-        return exchangeInfoRepository.findByStudent_StudentIDAndType(studentId, "download");
+        return exchangeInfoRepository.findByStudent_StudentID(studentId);
     }
 
     public List<ExchangeInfo> getAllExchangeInfos() {

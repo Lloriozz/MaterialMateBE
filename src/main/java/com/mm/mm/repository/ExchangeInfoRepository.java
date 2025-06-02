@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ExchangeInfoRepository extends JpaRepository<ExchangeInfo, Integer> {
-    List<ExchangeInfo> findByStudent_StudentIDAndType(String studentID, String type);
+public interface ExchangeInfoRepository extends JpaRepository<ExchangeInfo, String> {
+    List<ExchangeInfo> findByStudent_StudentID(String studentID);
 }

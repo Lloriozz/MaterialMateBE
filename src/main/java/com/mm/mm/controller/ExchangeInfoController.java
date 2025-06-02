@@ -24,10 +24,19 @@ public class ExchangeInfoController {
     private ExchangeInfoService exchangeInfoService;
 
     @PostMapping
-    public ExchangeInfo createExchange(@RequestBody ExchangeInfoCreationRequest request) {
-        return exchangeInfoService.createExchange(
-                request.getStudentId(),
-                request.getItemId());
+    public ResponseEntity<?> createExchange(@RequestBody ExchangeInfoCreationRequest request) {
+        try {
+            logger.info("Received request to create new exchange info");
+            ExchangeInfo createdExchange = exchangeInfoService.createNewExchange(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdExchange);
+        } catch (IllegalArgumentException e) {
+            logger.error("Invalid request data: ", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error creating exchange info: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while creating exchange info");
+        }
     }
 
     @GetMapping("/downloads/{studentId}")
