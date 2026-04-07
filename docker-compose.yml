@@ -1,7 +1,3 @@
-# Trên EC2: export ECR_REPO=<account>.dkr.ecr.<region>.amazonaws.com/<tên-repo>
-# rồi: docker compose pull && docker compose up -d
-# Thêm env DB qua file .env cùng thư mục hoặc mở rộng service bên dưới.
-
 services:
   api:
     image: ${ECR_REPO}:latest
