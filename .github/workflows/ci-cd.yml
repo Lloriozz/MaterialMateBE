@@ -1,0 +1,124 @@
+name: CI/CD
+
+on:
+  push:
+    branches: main
+  pull_request:
+    branches: main
+  workflow_dispatch:
+
+env:
+  JAVA_VERSION: "21"
+
+jobs:
+  test:
+    name: Build & test
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: MaterialMate
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=8
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: temurin
+          cache: maven
+
+      - name: Maven verify
+        env:
+          SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/MaterialMate
+          SPRING_DATASOURCE_USERNAME: root
+          SPRING_DATASOURCE_PASSWORD: root
+        run: ./mvnw -B verify
+
+  docker-build-push:
+    name: Docker build & push (ECR)
+    runs-on: ubuntu-latest
+    needs: test
+    if: >
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.ECR_REPO }}:latest
+            ${{ secrets.ECR_REPO }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy-ec2:
+    name: Deploy (EC2)
+    runs-on: ubuntu-latest
+    needs: docker-build-push
+    if: >
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Copy docker-compose via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY_EC2 }}
+          source: "docker-compose.yml"
+          target: "/home/ubuntu/"
+
+      - name: Deploy via SSH to EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY_EC2 }}
+          script: |
+            set -e
+            export ECR_REPO=${{ secrets.ECR_REPO }}
+            export AWS_REGION=${{ vars.AWS_REGION }}
+            ECR_REGISTRY="${ECR_REPO%%/*}"
+            aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$ECR_REGISTRY"
+            cd /home/ubuntu
+            docker compose pull
+            docker compose up -d --force-recreate
