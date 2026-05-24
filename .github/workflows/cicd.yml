@@ -1,0 +1,51 @@
+name: MaterialMate CICD Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    # Tạo một database MySQL ảo chỉ sống trong lúc chạy test
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: MaterialMate
+        ports:
+          - 3307:3306 # Map đúng port 3307 để Spring Boot kết nối thành công
+        options: >-
+          --health-cmd="mysqladmin ping -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+    - name: Checkout Source Code
+      uses: actions/checkout@v4
+
+    - name: Setup Java 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: 'maven' # Lưu cache thư viện, giúp các lần chạy sau nhanh hơn hẳn
+
+    - name: Cấp quyền thực thi cho Maven Wrapper
+      run: chmod +x ./mvnw
+
+    - name: Chạy Unit/Integration Tests
+      run: ./mvnw clean test
+
+
+
+
+
+
+
+
