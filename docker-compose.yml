@@ -1,6 +1,0 @@
-services:
-  api:
-    image: ${ECR_REPO}:latest
-    ports:
-      - "8080:8080"
-    restart: unless-stopped
