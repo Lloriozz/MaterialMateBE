@@ -42,7 +42,100 @@ jobs:
     - name: Chạy Unit/Integration Tests
       run: ./mvnw clean test
 
+  deploy:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Source Code
+      uses: actions/checkout@v4
 
+    - name: Setup Java 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: 'maven'
+
+    - name: Build Spring Boot JAR (Skip tests)
+      run: |
+        chmod +x ./mvnw
+        ./mvnw clean package -DskipTests
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build & Push Docker Image to ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: materialmate-backend
+        IMAGE_TAG: latest
+      run: |
+        # Build image from Dockerfile
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        # Push image to AWS ECR
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+    - name: Deploy to AWS EC2
+      uses: appleboy/ssh-action@v1.0.3
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: materialmate-backend
+        IMAGE_TAG: latest
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        # Pass environment variables to the SSH script
+        envs: ECR_REGISTRY,ECR_REPOSITORY,IMAGE_TAG,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_REGION
+        script: |
+          echo "==== STARTING DEPLOYMENT TO EC2 ===="
+          
+          # 1. Install Docker & AWS CLI on EC2 (if not installed)
+          sudo apt-get update -y
+          sudo apt-get install docker.io awscli -y
+          sudo systemctl start docker
+          sudo usermod -aG docker ubuntu || true
+          
+          # 2. Login to AWS ECR inside EC2 instance
+          aws ecr get-login-password --region $AWS_REGION | sudo docker login --username AWS --password-stdin $ECR_REGISTRY
+          
+          # 3. Pull the latest Docker Image to EC2
+          sudo docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          
+          # 4. Create Docker network (For App to connect with Database)
+          sudo docker network create mm-network || true
+          
+          # 5. Start MySQL Database (Create new only if it doesn't exist)
+          sudo docker start materialmate-mysql || sudo docker run -d --name materialmate-mysql --network mm-network -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=MaterialMate -p 3307:3306 mysql:8.0
+          
+          # 6. Remove the old running Backend version (if any)
+          sudo docker stop materialmate-backend || true
+          sudo docker rm materialmate-backend || true
+          
+          # 7. Start the new Backend version
+          sudo docker run -d \
+            --name materialmate-backend \
+            --network mm-network \
+            -p 8080:8080 \
+            -e SPRING_DATASOURCE_URL=jdbc:mysql://materialmate-mysql:3306/MaterialMate \
+            -e SPRING_DATASOURCE_USERNAME=root \
+            -e SPRING_DATASOURCE_PASSWORD=root \
+            $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+            
+          echo "==== DEPLOYMENT COMPLETE! ===="
 
 
 
